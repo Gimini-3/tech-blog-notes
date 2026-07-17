@@ -208,7 +208,7 @@ POST /actuator/refresh
 이 요청을 보내면 애플리케이션은 Config Server에서 최신 설정을 다시 읽어온다.
 이 방식은 설정 변경을 빠르게 반영할 수 있다는 장점이 있다.
 ---
-## **9. ****`/actuator/refresh`**** 방식의 한계**
+## 9. `/actuator/refresh` 방식의 한계
 하지만 `/actuator/refresh`를 직접 호출하는 방식은 인스턴스가 적을 때만 단순하다.
 운영 환경에서는 같은 서비스가 여러 인스턴스로 떠 있다.
 ```text
@@ -354,7 +354,7 @@ Spring Cloud Config를 도입할 때도 이런 운영 절차를 함께 만들어
 이를 해결하기 위해 메시지 기반 이벤트 전파 구조를 사용할 수 있고, 각 인스턴스의 반영 성공 여부를 확인하는 체계가 필요하다.
 결국 Spring Cloud Config를 실무에서 안정적으로 사용하려면 Config Server HA, Git 저장소 장애 대비, Config Client timeout/retry, 설정 변경 이벤트 전파, 설정 반영 상태 확인, 롤백 전략까지 함께 설계해야 한다.
 ---
-# **마지막 핵심 정리**
+## **마지막 핵심 정리**
 이 발표의 핵심은 **Spring Cloud Config를 단순히 도입하는 것이 아니라, 운영 환경에서 안정적으로 사용할 수 있도록 HA 구조로 커스터마이징하는 것**이다.
 Spring Cloud Config를 사용하면 설정을 Git 저장소에 모아두고, Config Server를 통해 여러 애플리케이션에 제공할 수 있다. 또한 설정 변경 후 refresh를 통해 애플리케이션 재배포 없이 새 설정을 반영할 수 있다.
 하지만 기본 구조에는 위험이 있다.
@@ -378,4 +378,3 @@ Spring Cloud Bus 같은 이벤트 전파 구조
 ```
 한 줄로 정리하면 다음과 같다.
 **Spring Cloud Config는 배포 없이 프로퍼티를 바꿀 수 있게 해주지만, 실무에서 안정적으로 쓰려면 Config Server와 설정 변경 전파 구조 전체를 고가용성으로 설계해야 한다.**
-

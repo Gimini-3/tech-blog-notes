@@ -39,7 +39,6 @@
 | 2025-11-01 | [Hive 채팅 시스템 구축기](./realtime-communication/2025-11-01-Hive-채팅-시스템-구축기.md) | Com2uS Platform | realtime-communication |
 | 2025-10-27 | [Bigtable](./database-storage/2025-10-27-Bigtable.md) | Google | database-storage |
 | 2025-10-08 | [일관된 해싱: 기본을 넘어서](./distributed-systems/2025-10-08-일관된-해싱-기본을-넘어서.md) | Omar El Gabry | distributed-systems |
-| 2025-10-05 | [고 처리량 분산 비율 제한기](./distributed-systems/2025-10-05-분산-시스템을-위한-클라이언트-측-비율-제한기.md) | LINE | distributed-systems |
 | 2025-09-30 | [다중 지역 복원력을 위한 Active-Active](./distributed-systems/2025-09-30-다중-지역-복원력을-위한-Active-Active.md) | Netflix | distributed-systems |
 | 2025-09-24 | [Java 가상 스레드, 깊이 있는 소스 코드 분석과 작동 원리 1편 - 생성과 시작](./java-spring/2025-09-24-Java-가상-스레드-깊이-있는-소스-코드-분석과-작동-원리-1편-생성과-시작.md) | LY Corporation | java-spring |
 | 2025-09-18 | [실시간 AI 스트리밍: WebSocket으로 완성하는 끊기지 않는 대화](./realtime-communication/2025-09-18-실시간-AI-스트리밍-WebSocket으로-완성하는-끊기지-않는-대화.md) | 교보DTS | realtime-communication |
