@@ -6,7 +6,6 @@
 
 ---
 
-# **SSG 기술블로그 흐름 중심 정리: Kotlin Coroutine 기반 비동기 제휴 연동 시스템**
 이 글은 코루틴 개념만 설명하는 글이 아니라, 실제 제휴 연동 시스템에서 병목이 생겼고 그 병목을 줄이기 위해 시스템 구조를 어떻게 바꿨는지 정리한 글이다.
 핵심 흐름은 다음과 같다.
 ```text
@@ -27,7 +26,7 @@ Batch + Kafka + Coroutine 절충 구조로 전환
 Latency, Thread Count, CPU, Heap, GC 지표 개선
 ```
 ---
-# **1. 기존 시스템의 문제**
+## **1. 기존 시스템의 문제**
 기존 제휴 연동 시스템은 Spring Batch 기반으로 동작했다.
 구조는 대략 다음과 같다.
 ![](assets/2026-05-20-Kotlin-Coroutine으로-구현한-비동기-제휴-연동-시스템-구축기/image-01.png)
@@ -48,16 +47,16 @@ Writer
 상품 하나를 제휴사에 연동하려면 상품 기본 정보, 재고, 옵션, 가격, 이미지, validation 정보 등 여러 API를 호출해야 했다. 블로그에서는 15개 이상의 API를 호출한다고 설명한다.
 기존 방식은 이 API들을 순차적으로 호출했다.
 ```kotlin
-//Processor 로직 
+//Processor 로직
 {
   ....
 
         // 1.상품 기본 정보 조회
         ItemBaseDto itemBaseDto = getItemBase(itemId);
-  
+
         // 2.재고 조회
         List<InventoryDto> inventory = getInventory(chnl, itemId, salestrNo, itemBaseDto);
-   
+
         // 3.옵션 조회
         List<OptionDto> optionDtos = getOption(itemId);
 
@@ -78,7 +77,7 @@ Writer
 이 구조에서는 API 하나가 느려지면 전체 처리가 같이 느려진다.
 즉, 기존 구조의 병목은 API 호출 개수와 순차 처리 방식에서 발생했다.
 ---
-# **2. 문제의 본질은 I/O 대기 시간**
+## **2. 문제의 본질은 I/O 대기 시간**
 이 시스템이 느린 이유는 CPU 계산이 오래 걸려서가 아니다.
 대부분의 시간은 외부 API 응답을 기다리는 시간이다.
 ```text
@@ -105,7 +104,7 @@ API 호출
 스레드 입장에서는 실제로 CPU를 계속 쓰는 것도 아닌데, 작업 하나에 점유되어 있는 상태가 된다.
 이게 Blocking 구조의 문제다.
 ---
-# **3. 처음 구상한 구조: Kafka 이벤트 기반 + Coroutine**
+## **3. 처음 구상한 구조: Kafka 이벤트 기반 + Coroutine**
 처음에는 Spring Batch를 완전히 제거하고, Kafka 이벤트 기반 구조로 전환하는 것을 목표로 했다.
 구상한 구조는 다음과 같다.
 ![](assets/2026-05-20-Kotlin-Coroutine으로-구현한-비동기-제휴-연동-시스템-구축기/image-02.png)
@@ -149,7 +148,7 @@ Composite 서비스가 내부적으로 여러 API 호출
 ```
 즉, 제휴 상품 연동 서비스가 15개 API를 직접 호출하지 않고, Composite 서비스에 한 번만 요청한다. 복잡한 API 조립 로직은 Composite 서비스가 담당한다.
 ---
-# **4. 실제 구현은 완전 실시간이 아니라 절충 구조**
+## **4. 실제 구현은 완전 실시간이 아니라 절충 구조**
 ![](assets/2026-05-20-Kotlin-Coroutine으로-구현한-비동기-제휴-연동-시스템-구축기/image-03.png)
 처음 목표는 완전한 이벤트 기반 실시간 처리였지만, 실제로는 바로 그렇게 가지 못했다.
 이유는 다음과 같다.
@@ -212,7 +211,7 @@ DTO 조립
 가장 큰 병목이었던 15개 API 호출은 Coroutine 기반 Composite 서비스로 옮겼다.
 이 부분이 실무적으로 중요하다. 이상적인 구조를 바로 적용하기보다, 기존 시스템과 운영 리스크를 고려해서 점진적으로 바꾼 구조다.
 ---
-# **5. 왜 Kotlin Coroutine을 사용했는가**
+## **5. 왜 Kotlin Coroutine을 사용했는가**
 기존 Java Thread 기반 방식은 OS Thread와 1:1에 가깝게 매핑된다.
 ![](assets/2026-05-20-Kotlin-Coroutine으로-구현한-비동기-제휴-연동-시스템-구축기/image-04.png)
 ```text
@@ -266,7 +265,7 @@ Coroutine-1 resume
 ```
 ![](assets/2026-05-20-Kotlin-Coroutine으로-구현한-비동기-제휴-연동-시스템-구축기/image-05.png)
 ---
-# **6. suspend와 resume**
+## **6. suspend와 resume**
 Coroutine은 중간에 멈췄다가 다시 이어서 실행될 수 있다.
 ```text
 Coroutine 시작
@@ -301,7 +300,7 @@ Thread는 다른 Coroutine 실행 가능
 그래서 Coroutine은 I/O 대기 시간이 많은 작업에서 유리하다.
 API 응답을 기다리는 동안 스레드를 계속 붙잡지 않기 때문이다.
 ---
-# **7. suspend 함수의 내부 동작: Continuation**
+## **7. suspend 함수의 내부 동작: Continuation**
 `suspend` 함수는 컴파일될 때 일반 함수와 다르게 변환된다.
 Kotlin 컴파일러는 suspend 함수를 상태 머신 형태로 바꾸고, Continuation 객체를 사용한다.
 Continuation은 쉽게 말하면 나중에 이어서 실행하기 위해 필요한 정보를 담은 객체다.
@@ -333,7 +332,7 @@ Thread는 다른 작업 실행
 ```
 이 구조 덕분에 코루틴은 스레드를 오래 점유하지 않고도 비동기 작업을 이어서 처리할 수 있다.
 ---
-# suspend - resume 동작 과정
+## suspend - resume 동작 과정
 ### 1. suspend 함수를 만나면, 현재 실행 중인 상태를 저장하기 위해 Continuation 객체가 생성되어 Heap에 저장된다.
 이 객체는 중단 시점의 변수, 실행 위치(label)등의 다양한 정보를 담고 있다.
 ![](assets/2026-05-20-Kotlin-Coroutine으로-구현한-비동기-제휴-연동-시스템-구축기/image-06.png)
@@ -342,7 +341,7 @@ Thread는 다른 작업 실행
 ### 3. 작업이 완료되면, Dispatcher는 등록된 값을 꺼내고, resume를 호출하면서 코루틴은 중단 지점부터 실행을 재개하게 된다.
 ![](assets/2026-05-20-Kotlin-Coroutine으로-구현한-비동기-제휴-연동-시스템-구축기/image-08.png)
 ---
-# **8. async, await, combine 흐름**
+## **8. async, await, combine 흐름**
 글에서 핵심적으로 사용한 패턴은 다음과 같다.
 ```kotlin
 coroutineScope {
@@ -440,7 +439,7 @@ combine으로 하나의 응답 DTO 조립
 ```
 Composite 서비스에서 이 패턴이 중요하게 사용된다.
 ---
-# **9. async 내부 동작 흐름**
+## **9. async 내부 동작 흐름**
 ```text
 1. 현재 coroutineContext와 전달받은 context를 합친다.
 2. CoroutineStart 설정을 확인한다.
@@ -569,7 +568,7 @@ val result = a.await()
 ```
 그래서 async와 await는 보통 같이 사용된다.
 ---
-# **10. Dispatcher**
+## **10. Dispatcher**
 Dispatcher는 코루틴을 어떤 스레드에서 실행할지 결정하는 역할을 한다.
 ```text
 Coroutine
@@ -620,7 +619,7 @@ Dispatchers.IO.limitedParallelism(3)
 ```
 실무에서는 이 부분이 중요하다.
 ---
-# **11. MDCContext**
+## **11. MDCContext**
 ```kotlin
 withContext(Dispatchers.IO.limitedParallelism(3) + MDCContext()) {
     ...
@@ -670,7 +669,7 @@ CoroutineContext에 포함
 ```
 즉, MDCContext는 성능 개선용이 아니라 코루틴 환경에서 로그 추적 문맥을 유지하기 위한 도구다.
 ---
-# **12. 도입 후 개선 결과**
+## **12. 도입 후 개선 결과**
 코루틴 도입 후 블로그에서는 다음과 같은 개선이 있었다고 설명한다.
 ```text
 처리 시간 감소
@@ -697,8 +696,7 @@ Coroutine이 suspend될 때 Continuation 객체가 Heap에 저장되므로, 코�
 그래서 블로그에서도 Heap Usage와 GC Rate/Time을 같이 확인했다.
 결과적으로 Heap과 GC 지표가 안정적이었기 때문에, 코루틴 도입이 운영 환경에서도 부담이 크지 않았다고 볼 수 있다.
 ---
-# **느낀점**
+## **느낀점**
 이 글을 보면서 코루틴은 단순히 비동기 처리를 쉽게 해주는 문법이 아니라, **I/O 대기 시간이 많은 시스템에서 스레드 자원을 효율적으로 쓰기 위한 설계 도구**라는 점을 알 수 있었다.
 특히 인상 깊었던 부분은 처음부터 완전한 이벤트 기반 구조로 바꾸지 않고, 중복 데이터나 제휴사 호출 제한 같은 현실적인 문제를 고려해서 **Batch + Kafka + Coroutine 절충 구조**를 선택했다는 점이다.
 결국 중요한 것은 새로운 기술을 쓰는 것 자체가 아니라, 현재 시스템의 병목이 어디인지 찾고, 운영 환경에서 안정적으로 적용할 수 있는 방식으로 개선하는 것이라고 느꼈다.
-
