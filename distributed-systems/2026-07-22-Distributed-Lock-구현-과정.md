@@ -1,12 +1,8 @@
 # Distributed Lock 구현 과정
 
-링크: https://tech.channel.io/kr/articles/fd7094b7?utm_source=chatgpt.com
-회사: 채널톡
-상태: 완료
-깃허브 글 수정: 시작 전
-날짜: 2026년 7월 22일
-주제: 분산락
-기술블로그 링크: https://tech.channel.io/kr/articles/fd7094b7?utm_source=chatgpt.com
+- 읽은 날짜: 2026-07-22
+- 회사: 채널톡
+- 원문: [Distributed Lock 구현 과정](https://tech.channel.io/kr/articles/fd7094b7)
 
 # Redis 분산 락 구현 과정: SET NX EX부터 Pub/Sub 재시도까지
 
