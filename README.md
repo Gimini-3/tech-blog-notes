@@ -8,6 +8,7 @@
 
 | 날짜       | 제목                                                                                                                                                                                                              | 회사/작성 주체  | 주제                   |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------- |
+| 2026-07-22 | [Distributed Lock 구현 과정](./distributed-systems/2026-07-22-Distributed-Lock-구현-과정.md)                                       | 채널톡         | distributed-systems    |
 | 2026-07-14 | [100X Faster: How We Supercharged Netflix Maestro’s Workflow Engine](./distributed-systems/2026-07-14-100X-Faster-How-We-Supercharged-Netflix-Maestro’s-Workflow-Engine.md)                                       | Netflix         | distributed-systems    |
 | 2026-07-07 | [Kafka Consumer 멱등성 처리: 중복 메시지를 안전하게 다루는 방법](./data-messaging/2026-07-07-Kafka-Consumer-멱등성-처리-중복-메시지를-안전하게-다루는-방법.md)                                                    | Conduktor       | data-messaging         |
 | 2026-06-30 | [올영세일 선착순 쿠폰, 미발급 0%를 향한 여정](./data-messaging/2026-06-30-올영세일-선착순-쿠폰-미발급-0%를-향한-여정.md)                                                                                          | 올리브영        | data-messaging         |
