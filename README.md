@@ -8,7 +8,7 @@
 
 | 날짜       | 제목                                                                                                                                                                                                              | 회사/작성 주체  | 주제                   |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------- |
-| 2026-08-03 | [회원시스템 이벤트 기반 아키텍처 구축하기](./architecture/2026-08-03-회원시스템-이벤트-기반-아키텍처-구축하기.md)                                                                                                 | 우아한형제들    | architecture           |
+| 2026-09-03 | [Kafka Rebalancing과 메시지 처리 병목 개선](./data-messaging/2026-09-03-Kafka-Rebalancing과-메시지-처리-병목-개선.md)                                                                                             | 넥스트리        | data-messaging         |
 | 2026-08-03 | [회원시스템 이벤트 기반 아키텍처 구축하기](./architecture/2026-08-03-회원시스템-이벤트-기반-아키텍처-구축하기.md)                                                                                                 | 우아한형제들    | architecture           |
 | 2026-07-27 | [Reliable Microservices Data Exchange With the Outbox Pattern](./data-messaging/2026-07-27-Reliable-Microservices-Data-Exchange-With-the-Outbox-Pattern.md)                                                       | Debezium        | data-messaging         |
 | 2026-07-25 | [트랜잭셔널 아웃박스 패턴의 실제 구현 사례 (29CM)](./data-messaging/2026-07-25-트랜잭셔널-아웃박스-패턴의-실제-구현-사례-29CM.md)                                                                                 | 29CM            | data-messaging         |
