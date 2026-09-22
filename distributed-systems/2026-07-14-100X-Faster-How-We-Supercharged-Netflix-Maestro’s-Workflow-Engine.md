@@ -4,8 +4,6 @@
 - 회사/작성 주체: Netflix
 - 원문: [100X Faster: How We Supercharged Netflix Maestro’s Workflow Engine](https://netflixtechblog.com/100x-faster-how-we-supercharged-netflix-maestros-workflow-engine-028e9637f041)
 
-# Netflix Maestro는 어떻게 워크플로 엔진을 100배 빠르게 만들었을까?
-
 ## 1. Maestro는 어떤 시스템인가?
 
 Maestro는 Netflix가 대규모 데이터·머신러닝 작업을 실행하기 위해 만든 **워크플로 오케스트레이터**다.
@@ -42,11 +40,11 @@ Maestro는 단순히 작업을 실행하는 것이 아니라 다음과 같은 �
 
 확장성, 처리량, 지연시간은 서로 다른 개념이다.
 
-| 개념 | 의미 |
-| --- | --- |
+| 개념        | 의미                                                |
+| ----------- | --------------------------------------------------- |
 | Scalability | 작업량이 증가했을 때 서버를 추가해 대응할 수 있는가 |
-| Throughput | 일정 시간 동안 얼마나 많은 작업을 처리할 수 있는가 |
-| Latency | 하나의 요청이 실제 처리되기까지 얼마나 걸리는가 |
+| Throughput  | 일정 시간 동안 얼마나 많은 작업을 처리할 수 있는가  |
+| Latency     | 하나의 요청이 실제 처리되기까지 얼마나 걸리는가     |
 
 기존 Maestro는 서버를 늘리면 더 많은 작업을 동시에 처리할 수 있었다.
 
@@ -61,7 +59,7 @@ Maestro는 단순히 작업을 실행하는 것이 아니라 다음과 같은 �
 5. Task를 다시 Queue에 등록한다.
 6. 다음 Polling까지 기다린다.
 
-# **Task 1회 실행마다 반복되는 기존 처리 흐름**
+### Task 1회 실행마다 반복되는 기존 처리 흐름
 
 Worker를 추가하면 처리량은 증가하지만, 각 Task가 Queue Polling을 기다리고 DB를 조회하는 시간은 줄어들지 않는다.
 
@@ -73,11 +71,11 @@ Worker를 추가하면 처리량은 증가하지만, 각 Task가 Queue Polling�
 
 기존 Maestro는 크게 세 계층으로 구성됐다.
 
-| 계층 | 주요 역할 |
-| --- | --- |
-| Maestro API / Step Runtime | 사용자 요청, 인증, 모니터링, Spark·Trino 등 외부 환경 연동 |
-| Maestro Engine | Workflow·Step 상태 머신, DAG를 Flow와 Task로 변환, 상태 저장 |
-| Internal Flow Engine | Task 실행, 다음 Task 시작, Queue와 내부 실행 흐름 관리 |
+| 계층                       | 주요 역할                                                    |
+| -------------------------- | ------------------------------------------------------------ |
+| Maestro API / Step Runtime | 사용자 요청, 인증, 모니터링, Spark·Trino 등 외부 환경 연동   |
+| Maestro Engine             | Workflow·Step 상태 머신, DAG를 Flow와 Task로 변환, 상태 저장 |
+| Internal Flow Engine       | Task 실행, 다음 Task 시작, Queue와 내부 실행 흐름 관리       |
 
 가장 아래에 있는 Internal Flow Engine은 **Conductor 2.x**를 기반으로 구현돼 있었다.
 
@@ -101,10 +99,10 @@ API와 Runtime 계층보다 더 큰 문제는 Maestro Engine 아래에 있던 �
 
 기존 구조에서는 Maestro와 Conductor가 각각 별도의 상태 머신과 데이터베이스를 가지고 있었다.
 
-| Maestro DB | Conductor DB |
-| --- | --- |
-| Workflow State | Flow State |
-| Step State | Task State |
+| Maestro DB     | Conductor DB |
+| -------------- | ------------ |
+| Workflow State | Flow State   |
+| Step State     | Task State   |
 
 예를 들어 하나의 작업이 완료되면 다음 두 상태가 모두 변경돼야 했다.
 
@@ -211,11 +209,11 @@ Netflix는 새로운 엔진에서 다음 조건을 보장해야 했다.
 
 Netflix는 다음 세 가지 방법을 검토했다.
 
-| 선택지 | 내용 |
-| --- | --- |
-| Option 1 | Maestro 전용 Flow Engine 직접 구현 |
+| 선택지   | 내용                                     |
+| -------- | ---------------------------------------- |
+| Option 1 | Maestro 전용 Flow Engine 직접 구현       |
 | Option 2 | Conductor 2.x를 Conductor 4로 업그레이드 |
-| Option 3 | Temporal 도입 |
+| Option 3 | Temporal 도입                            |
 
 ### Conductor 4 업그레이드
 
@@ -249,17 +247,16 @@ Netflix는 Maestro가 실제로 필요로 하는 기능만 포함한 **경량 Fl
 
 그렇다고 DB를 제거한 것은 아니다. DB와 메모리의 역할을 명확하게 나눴다.
 
-| Maestro DB | JVM Memory |
-| --- | --- |
-| 영구 상태 저장 | 현재 실행 상태 저장 |
-| 장애 복구 기준 | 빠른 상태 접근 |
-| Source of Truth | Actor의 즉각적인 상태 전환 |
-| Workflow·Step 상태 | Flow·Task 활성 상태 |
+| Maestro DB         | JVM Memory                 |
+| ------------------ | -------------------------- |
+| 영구 상태 저장     | 현재 실행 상태 저장        |
+| 장애 복구 기준     | 빠른 상태 접근             |
+| Source of Truth    | Actor의 즉각적인 상태 전환 |
+| Workflow·Step 상태 | Flow·Task 활성 상태        |
 
 전체 구조는 다음과 같다.
 
 <img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/539253f9-4ec6-410c-8588-7c349e1550ad" />
-
 
 평상시에는 메모리 상태를 이용해 빠르게 처리한다.
 
@@ -488,9 +485,9 @@ Stateful Flow를 이동하려면 다음 문제를 함께 해결해야 하기 때
 Maestro는 `foreach`나 Subworkflow를 실행할 때 Child Flow를 생성한다.
 
 - Parent Flow
-    - Child Flow 1
-    - Child Flow 2
-    - Child Flow 3
+  - Child Flow 1
+  - Child Flow 2
+  - Child Flow 3
 
 Parent와 Child는 서로 다른 Group에 배치될 수 있다.
 
@@ -538,13 +535,13 @@ Netflix는 기존 Workflow가 생성될 당시 사용한 최대 Group 수 `N'`�
 
 ---
 
-# 핵심 내용 정리
+## 핵심 내용 정리
 
 Netflix Maestro의 문제는 많은 작업을 처리하지 못하는 것이 아니었다.
 
 많은 작업을 동시에 처리할 수는 있었지만, 하나의 Task가 완료된 후 다음 Task로 넘어가는 과정에서 Queue Polling, DB 조회, 상태 동기화가 반복돼 지연시간이 길었다.
 
-## 기존 구조의 문제
+### 기존 구조의 문제
 
 1. Polling으로 인한 Step 사이의 대기 시간
 2. Task 처리 때마다 Workflow 전체 상태 조회
@@ -553,16 +550,16 @@ Netflix Maestro의 문제는 많은 작업을 처리하지 못하는 것이 아�
 5. 긴 GC 이후 오래된 Worker가 상태를 되돌리는 문제
 6. Maestro에 필요하지 않은 범용 DAG Engine의 복잡성
 
-## 새로운 구조의 핵심
+### 새로운 구조의 핵심
 
-| 구성 요소 | 역할 |
-| --- | --- |
-| Maestro DB | 영구적인 Source of Truth |
-| JVM Memory | 빠른 Flow·Task 실행 상태 |
-| Actor | 하나의 Entity에 대한 Event를 순차 처리 |
-| Locality | 같은 Flow와 Task를 같은 JVM에 배치 |
-| Flow Group | 여러 Flow를 묶어 Node에 분산 |
-| Generation ID | 이전 Owner의 늦은 실행 차단 |
+| 구성 요소     | 역할                                   |
+| ------------- | -------------------------------------- |
+| Maestro DB    | 영구적인 Source of Truth               |
+| JVM Memory    | 빠른 Flow·Task 실행 상태               |
+| Actor         | 하나의 Entity에 대한 Event를 순차 처리 |
+| Locality      | 같은 Flow와 Task를 같은 JVM에 배치     |
+| Flow Group    | 여러 Flow를 묶어 Node에 분산           |
+| Generation ID | 이전 Owner의 늦은 실행 차단            |
 
 기존 실행 흐름은 Queue, Worker, DB 조회, 상태 저장, Queue 재등록을 반복했다.
 
@@ -585,7 +582,7 @@ Netflix는 이를 통해 Step 실행 오버헤드를 약 **5초에서 50밀리�
 
 ---
 
-# 느낀 점
+## 느낀 점
 
 확장성이 좋은 시스템이라도 개별 작업의 지연시간이 크면 사용자 경험과 개발 생산성이 떨어질 수 있다는 점이 인상적이었다.
 
