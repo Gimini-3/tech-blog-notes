@@ -1,6 +1,6 @@
 # Kafka Rebalancing과 메시지 처리 병목 개선
 
-- 읽은 날짜: 2026-09-03
+- 읽은 날짜: 2026-08-12
 - 회사/작성 주체: 넥스트리
 - 원문: [Kafka Rebalancing과 메시지 처리 병목 개선](https://www.nextree.io/kafka-rebalancinggwa-mesiji-ceori-byeongmog-gaeseon/)
 
