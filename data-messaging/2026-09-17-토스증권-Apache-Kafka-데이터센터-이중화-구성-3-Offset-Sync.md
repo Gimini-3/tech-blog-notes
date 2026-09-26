@@ -1,6 +1,6 @@
 # 토스증권 Apache Kafka 데이터센터 이중화 구성 #3: Offset Sync
 
-- 읽은 날짜: 2026-09-19
+- 읽은 날짜: 2026-09-17
 - 회사/작성 주체: 토스증권
 - 원문: [토스증권 Apache Kafka 데이터센터 이중화 구성 #3: Offset Sync](https://toss.tech/article/kafka-distribution-3)
 

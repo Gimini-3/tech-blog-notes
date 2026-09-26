@@ -14,7 +14,7 @@ Redis Pub/Sub을 활용하여 쿠폰 발급을 비동기로 처리하여 개선
 
 ---
 
-# 기존 쿠폰 발급 프로세스
+## 기존 쿠폰 발급 프로세스
 
 <img width="1040" height="930" alt="image" src="https://github.com/user-attachments/assets/7529304f-30ce-4926-bec0-76a09c23a248" />
 
@@ -22,7 +22,7 @@ Redis Pub/Sub을 활용하여 쿠폰 발급을 비동기로 처리하여 개선
 
 높은 트래픽 환경에서도 안정적으로 서비스를 제공하기 위해 접속한 사용자가 순서대로 쿠폰 발급을 시도할 수 있도록 제어하고 있으며, 사용자는 본인의 순서가 돌아올 때까지 긴 시간을 대기해야 한다.
 
-# 프로세스를 어떻게 개선할까?
+## 프로세스를 어떻게 개선할까?
 
 <img width="960" height="564" alt="image" src="https://github.com/user-attachments/assets/9478a0ac-a681-44b6-be08-2397fbefb301" />
 
@@ -32,13 +32,13 @@ Redis Pub/Sub을 활용하여 쿠폰 발급을 비동기로 처리하여 개선
 
 ---
 
-# Redis Pub/Sub이란?
+## Redis Pub/Sub이란?
 
 <img width="960" height="546" alt="image" src="https://github.com/user-attachments/assets/a5f873e1-8803-431b-86f2-5b0c709eed57" />
 
 특정 주제(Topic/Channel)를 구독한 구독자에게 메시지를 발행하는 통신 방법
 
-publisher가 메시지를 publish하면 해당 Topic을 구독하고 있는 다수의 subscriber가 메시지를 받을 수 있는 구조이다. 
+publisher가 메시지를 publish하면 해당 Topic을 구독하고 있는 다수의 subscriber가 메시지를 받을 수 있는 구조이다.
 
 Redis는 In-Memory 기반이기 때문에 네트워크 통신이 필요한 웹소켓을 이용하는 것보다 매우 빠르게 메시지를 주고받을 수 있다.
 
@@ -50,15 +50,15 @@ Redis는 In-Memory 기반이기 때문에 네트워크 통신이 필요한 웹�
 
 ---
 
-# Redis Pub/Sub을 쿠폰 발급에 적용
+## Redis Pub/Sub을 쿠폰 발급에 적용
 
 <img width="1380" height="462" alt="image" src="https://github.com/user-attachments/assets/1f841d84-e80c-4e35-9cd1-283573b658c0" />
 
- ‘쿠폰발급’이라는 Topic에 쿠폰 발급 데이터 publish→ 쿠폰발급 Topic을 구독하고 있는쿠폰 발급 Worker 
+‘쿠폰발급’이라는 Topic에 쿠폰 발급 데이터 publish→ 쿠폰발급 Topic을 구독하고 있는쿠폰 발급 Worker
 
 → 전달받은 쿠폰 발급 데이터를 Main DB에 INSERT하여 발급 처리를 진행
 
-## Redis Pub/Sub 적용 후 이슈 첫 번째: 쿠폰 과발급 현상
+### Redis Pub/Sub 적용 후 이슈 첫 번째: 쿠폰 과발급 현상
 
 <img width="2240" height="760" alt="image" src="https://github.com/user-attachments/assets/708959c9-93d9-4e33-8eb1-e6d018ddfb77" />
 
@@ -72,15 +72,15 @@ Redis는 In-Memory 기반이기 때문에 네트워크 통신이 필요한 웹�
 
 해결 방법: message를 publish 할 때 여러 개의 Worker 중 1개의 Worker를 고르고, 해당 Worker만 message를 받아 쿠폰 발급 처리를 할 수 있도록 변경했다.
 
-## Redis Pub/SUb 적용 후 이슈 두 번째: 쿠폰 미발급 현상
+### Redis Pub/Sub 적용 후 이슈 두 번째: 쿠폰 미발급 현상
 
 <img width="960" height="326" alt="image" src="https://github.com/user-attachments/assets/56b57777-a0cb-4533-b305-c9a86e9e75c1" />
 
 미발급 현상이 발생
 
-문제점: Redis Pub/Sub의 특징 중 하나인 ‘100% 전송 보장이 되지 않아도 문제없는 케이스에 사용하기 좋다.’를 간과한 것이 문제라고 판단 
+문제점: Redis Pub/Sub의 특징 중 하나인 ‘100% 전송 보장이 되지 않아도 문제없는 케이스에 사용하기 좋다.’를 간과한 것이 문제라고 판단
 
-해결 방법: 쿠폰 발급 데이터의 유실을 막기 위해 Redis에서 제공하는 List  자료구조를 활용했다.
+해결 방법: 쿠폰 발급 데이터의 유실을 막기 위해 Redis에서 제공하는 List 자료구조를 활용했다.
 
 - 먼저 기존처럼 올리브영 온라인물에서 여러 개의 Worker 중 1개의 Worker를 골라 일련번호를 획득한다.
 - 그리고 list 자료구조로 되어 있는 ‘쿠폰발급 저장소’에 쿠폰 발급 데이터를 RPush한다.
@@ -90,13 +90,14 @@ Redis는 In-Memory 기반이기 때문에 네트워크 통신이 필요한 웹�
 
 ---
 
-# 최종으로 적용된 쿠폰 발급 로직
+## 최종으로 적용된 쿠폰 발급 로직
 
 <img width="960" height="442" alt="image" src="https://github.com/user-attachments/assets/3deb90e6-b9c0-41b2-8ab3-064aa1ffa164" />
 
 1. 쿠폰 발급 Worker가 구동되면 '쿠폰발급' 이라는 Topic에 대한 '일련번호'가 생성됩니다. Worker마다 각각의 '일련번호'가 할당되어 있다.
 2. 각 Worker들은 '쿠폰발급'이라는 Topic을 구독한다.
 3. 주기적으로 '쿠폰 발급 저장소' List의 크기가 0보다 큰지 확인하고, 0보다 크면 List에서 데이터를 Pop 하여 쿠폰을 발급하는 프로세스가 실행된다.
+
 - 위의 1~3번 과정은 쿠폰 발급을 위해 기본적으로 미리 실행되어 있어야 한다.
 
 아래 4~8번 과정은 실제 사용자가 쿠폰 발급을 요청했을 때 어떤 흐름으로 동작하는지 설명한다.
@@ -109,12 +110,12 @@ Redis는 In-Memory 기반이기 때문에 네트워크 통신이 필요한 웹�
 
 **결론적으로, 여러 Worker 중 어떤 Worker를 통해 쿠폰을 발급할지 결정지어 주는 역할을 Redis Pub/Sub 기능을 활용하여 구현(1개의 '일련번호' 선택)하였고, 실제 쿠폰 발급에 필요한 데이터는 각 Worker 별로 지정된 '쿠폰 발급 저장소'에 저장되었다가 쿠폰 발급이 진행된다.**
 
-# 결과
+## 결과
 
 기존 대비 분당 최대 쿠폰 발급량이 2.2배에 달하는 속도 개선이 있었다고 한다.
 
 사용자의 쿠폰 발급 대기 시간도 많이 줄어들어 모든 쿠폰이 1~2분 만에 소진되었고, 덕분에 사용자 경험도 좋아지고 매출 증가에도 좋은 영향을 끼쳤다고 한다.
 
-# 느낀점
+## 느낀점
 
 Redis Pub/Sub에 대해서 공부하고 싶어서 찾아봤는데 Redis Pub/Sub의 동작원리 뿐만 아니라 문제점과 어떻게 해결하는가 까지 공부 할 수 있어서 좋았습니다. 이번 프로젝트에서 Redis Pub/Sub을 써서 개발해보고 싶습니다.
