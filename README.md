@@ -10,15 +10,15 @@
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------- |
 | 2026-10-11 | [우리는 어떻게 해외주식 서비스 안정화를 이뤘는가](./finance-architecture/2026-10-11-우리는-어떻게-해외주식-서비스-안정화를-이뤘는가.md) | 토스증권 | finance-architecture |
 | 2026-10-09 | [Resilience4j Circuit Breaker를 이용한 장애 대비하기](./architecture/2026-10-09-Resilience4j-Circuit-Breaker를-이용한-장애-대비하기.md) | NHN CLOUD | architecture |
-| 2026-10-07 | [다른 은행으로 송금할 때 은행끼리는 어떻게 통신할까?](./finance-architecture/2026-10-07-다른-은행으로-송금할-때-은행끼리는-어떻게-통신할까.md) | 직접 정리 | finance-architecture |
+| 2026-10-07 | [다른 은행으로 송금할 때 은행끼리는 어떻게 통신할까?](./finance-architecture/2026-10-07-다른-은행으로-송금할-때-은행끼리는-어떻게-통신할까.md) | | finance-architecture |
 | 2026-10-05 | [마이데이터 플랫폼의 대용량 데이터 처리 개선! 구경 한번 해볼래?](./data-messaging/2026-10-05-마이데이터-플랫폼의-대용량-데이터-처리-개선.md) | 카카오페이 | data-messaging |
 | 2026-10-02 | [Spring Data Redis: Repository vs RedisTemplate — 실전 성능 비교](./database-storage/2026-10-02-Spring-Data-Redis-Repository-vs-RedisTemplate-실전-성능-비교.md) | 여기어때 | database-storage |
-| 2026-09-30 | [밤 12시 은행에서는 무슨 일이 벌어질까?](./finance-architecture/2026-09-30-밤-12시-은행에서는-무슨-일이-벌어질까.md) | 직접 정리 | finance-architecture |
+| 2026-09-30 | [밤 12시 은행에서는 무슨 일이 벌어질까?](./finance-architecture/2026-09-30-밤-12시-은행에서는-무슨-일이-벌어질까.md) | | finance-architecture |
 | 2026-09-27 | [데드락을 해결하려다, 락을 줄이게 된 이야기](./database-storage/2026-09-27-데드락을-해결하려다-락을-줄이게-된-이야기.md) | 여기어때 | database-storage |
 | 2026-09-23 | [MySQL Orchestrator 기반의 새로운 HA 표준 개발기](./database-storage/2026-09-23-MySQL-Orchestrator-기반의-새로운-HA-표준-개발기.md) | Kakao | database-storage |
-| 2026-09-23 | [계좌이체 한 건은 실제로 어떻게 완료될까?](./finance-architecture/2026-09-23-계좌이체-한-건은-실제로-어떻게-완료될까.md) | 직접 정리 | finance-architecture |
+| 2026-09-23 | [계좌이체 한 건은 실제로 어떻게 완료될까?](./finance-architecture/2026-09-23-계좌이체-한-건은-실제로-어떻게-완료될까.md) | | finance-architecture |
 | 2026-09-17 | [토스증권 Apache Kafka 데이터센터 이중화 구성 #3: Offset Sync](./data-messaging/2026-09-17-토스증권-Apache-Kafka-데이터센터-이중화-구성-3-Offset-Sync.md)                                                         | 토스증권        | data-messaging         |
-| 2026-09-16 | [핀테크 앱은 여러 은행의 계좌를 어떻게 한 번에 조회할까?](./finance-architecture/2026-09-16-핀테크-앱은-여러-은행의-계좌를-어떻게-한-번에-조회할까.md) | 직접 정리 | finance-architecture |
+| 2026-09-16 | [핀테크 앱은 여러 은행의 계좌를 어떻게 한 번에 조회할까?](./finance-architecture/2026-09-16-핀테크-앱은-여러-은행의-계좌를-어떻게-한-번에-조회할까.md) | | finance-architecture |
 | 2026-09-11 | [토스증권 Apache Kafka 데이터센터 이중화 구성 #2: 데이터 미러링](./data-messaging/2026-09-11-토스증권-Apache-Kafka-데이터센터-이중화-구성-2-데이터-미러링.md)                                                     | 토스증권        | data-messaging         |
 | 2026-09-03 | [토스증권 Apache Kafka 데이터센터 이중화 구성 #1](./data-messaging/2026-09-03-토스증권-Apache-Kafka-데이터센터-이중화-구성-1.md)                                                                                  | 토스증권        | data-messaging         |
 | 2026-08-26 | [아파치 플링크와 CDC의 만남. 플링크 CDC 맛보기](./data-messaging/2026-08-26-아파치-플링크와-CDC의-만남-플링크-CDC-맛보기.md)                                                                                      | Kakao           | data-messaging         |
